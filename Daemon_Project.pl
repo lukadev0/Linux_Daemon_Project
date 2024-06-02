@@ -7,12 +7,12 @@ use File::Temp qw(tempfile);
 use File::Path qw(make_path remove_tree);
 use POSIX qw(getpwuid);
 
-my $user_file = "/var/temp_users_file.txt"; # Specifica un percorso diverso da /tmp
+my $user_file = "/var/temp_users_file.txt"; 
 my %users;
 my $mw;
 
 
-# Carica gli utenti esistenti dal file
+# Carico gli utenti esistenti dal file
 load_users();
 
 # Creazione dell'interfaccia TK
@@ -74,10 +74,11 @@ $mw->Button(
 
 MainLoop();
 
-Proc::Daemon::Init; # Inizializza il demone
+Proc::Daemon::Init; # Inizializzazione il demone
 
 
 # Funzione per salvare gli utenti nel file temporaneo
+
 sub save_users {
     open(my $fh, '>', $user_file) or die "Cannot open file: $!";
     foreach my $username (keys %users) {
@@ -89,6 +90,7 @@ sub save_users {
 }
 
 # Funzione per caricare gli utenti dal file temporaneo
+
 sub load_users {
     %users = ();
     open(my $fh, '<', $user_file) or return;
@@ -100,7 +102,6 @@ sub load_users {
     close($fh);
 }
 
-# Funzione per creare un utente temporaneo
 sub create_user {
     my ($username, $permissions) = @_;
 
@@ -119,7 +120,7 @@ sub create_user {
     save_users();
 }
 
-# Funzione per modificare un utente temporaneo
+
 sub modify_user {
     my ($old_username, $new_username, $new_permissions) = @_;
     my $old_home = $users{$old_username}{home};
@@ -146,8 +147,6 @@ sub update_user_in_groups {
     close($fh);
 }
 
-
-# Funzione per eliminare un utente temporaneo
 sub delete_user {
     my ($username) = @_;
     my $home = $users{$username}{home};
@@ -165,7 +164,7 @@ sub delete_user {
 }
 
 
-# Funzione per rimuovere un utente da tutti i gruppi
+
 sub delete_user_from_groups {
     my ($username) = @_;
     open(my $fh, '<', '/etc/group') or die "Cannot open /etc/group: $!";
@@ -182,7 +181,6 @@ sub delete_user_from_groups {
     close($fh);
 }
 
-# Funzione per spegnere il demone
 sub shutdown_daemon {
     foreach my $username (keys %users) {
         delete_user($username);
@@ -191,7 +189,6 @@ sub shutdown_daemon {
     exit 0;
 }
 
-# Funzione per mostrare la lista degli utenti
 sub show_user_list {
     my $list_window = $mw->Toplevel();
     $list_window->title("Lista Utenti Temporanei");
